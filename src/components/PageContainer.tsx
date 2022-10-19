@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { ReactNode } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -13,7 +13,9 @@ function PageContainer({ children }: PageContainerProps) {
       <Header />
       <Flex w="100%" maxW={1480} mx="auto" px={6} my={6}>
         <Sidebar />
-        {children}
+        <Box p={"8"} bg="gray.800" borderRadius="8" pb={4} flex={1}>
+          {children}
+        </Box>
       </Flex>
     </Flex>
   );
