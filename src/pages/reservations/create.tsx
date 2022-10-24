@@ -7,19 +7,58 @@ import {
   FormLabel,
   Heading,
   HStack,
-  Input,
   Select,
   SimpleGrid,
 } from "@chakra-ui/react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Input } from "../../components/Form/Input";
 import PageContainer from "../../components/PageContainer";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-const quartos = [1, 2, 3, 4, 5, 6];
+type CreateReservationFormData = {
+  roomNumber: string;
+  payingGuest: string;
+  startDate: string;
+  endDate: string;
+  accompanyingGuests: string;
+};
+
+const rooms = ["1", "2", "3", "4", "5", "6"];
+
+const createReservationFormSchema = yup.object({
+  payingGuest: yup.string().required("Hóspede pagante obrigatório"),
+  startDate: yup.string().required("Data de início obrigatória"),
+  endDate: yup.string().required("Data de fim obrigatória"),
+});
 
 function CreateReservation() {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateReservationFormData>({
+    resolver: yupResolver(createReservationFormSchema),
+  });
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
+
+  const handleCreateNewReservation: SubmitHandler<CreateReservationFormData> = (
+    values
+  ) => {
+    console.log(values);
+    router.push("/reservations");
+  };
+
   return (
     <PageContainer>
-      <Box as="form">
+      <Box as="form" onSubmit={handleSubmit(handleCreateNewReservation)}>
         <Heading size="lg" fontWeight="normal">
           Nova reserva
         </Heading>
@@ -28,7 +67,6 @@ function CreateReservation() {
           <FormControl>
             <FormLabel htmlFor={"quarto"}>Selecionar Quarto</FormLabel>
             <Select
-              name="quarto"
               id="quarto"
               focusBorderColor="yellow.500"
               bgColor="gray.900"
@@ -37,85 +75,45 @@ function CreateReservation() {
                 bgColor: "gray.900",
               }}
               size="lg"
+              {...register("roomNumber")}
             >
-              {quartos.map((quarto) => {
+              {rooms.map((room) => {
                 return (
                   <option
-                    value={quarto}
-                    key={quarto}
+                    value={room}
+                    key={room}
                     style={{
                       backgroundColor: "#181B23",
                       borderColor: "#181B23",
                     }}
                   >
-                    {quarto}
+                    {room}
                   </option>
                 );
               })}
             </Select>
           </FormControl>
-          <FormControl>
-            <FormLabel htmlFor={"hospedePagante"}>Hóspede Pagante</FormLabel>
-            <Input
-              id="hospedePagante"
-              name="hospedePagante"
-              type="text"
-              focusBorderColor="yellow.500"
-              bgColor="gray.900"
-              variant="filled"
-              _hover={{
-                bgColor: "gray.900",
-              }}
-              size="lg"
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor={"dataInicio"}>Data Inicio</FormLabel>
-            <Input
-              id="dataInicio"
-              name="dataInicio"
-              type="date"
-              focusBorderColor="yellow.500"
-              bgColor="gray.900"
-              variant="filled"
-              _hover={{
-                bgColor: "gray.900",
-              }}
-              size="lg"
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor={"dataFim"}>Data Fim</FormLabel>
-            <Input
-              id="dataFim"
-              name="dataFim"
-              type="date"
-              focusBorderColor="yellow.500"
-              bgColor="gray.900"
-              variant="filled"
-              _hover={{
-                bgColor: "gray.900",
-              }}
-              size="lg"
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor={"hospedesAcompanhantes"}>
-              Hóspedes Acompanhantes
-            </FormLabel>
-            <Input
-              id="hospedesAcompanhantes"
-              name="hospedesAcompanhantes"
-              type="text"
-              focusBorderColor="yellow.500"
-              bgColor="gray.900"
-              variant="filled"
-              _hover={{
-                bgColor: "gray.900",
-              }}
-              size="lg"
-            />
-          </FormControl>
+          <Input
+            label="Hóspede Pagante"
+            {...register("payingGuest")}
+            error={errors.payingGuest}
+          />
+          <Input
+            label="Data de Início"
+            type="date"
+            {...register("startDate")}
+            error={errors.startDate}
+          />
+          <Input
+            label="Data de Fim"
+            type="date"
+            {...register("endDate")}
+            error={errors.endDate}
+          />
+          <Input
+            label="Hóspedes Acompanhantes"
+            {...register("accompanyingGuests")}
+          />
         </SimpleGrid>
         <Flex mt={8} justify="flex-end">
           <HStack spacing={4}>
@@ -125,6 +123,7 @@ function CreateReservation() {
               </Button>
             </Link>
             <Button
+              type="submit"
               size="md"
               fontSize="md"
               bg="yellow.600"

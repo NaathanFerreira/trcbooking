@@ -1,11 +1,31 @@
-import { Button, Flex, Stack, Box, Image } from "@chakra-ui/react";
+import { Button, Flex, Stack } from "@chakra-ui/react";
 import type { NextPage } from "next";
-import Input from "../components/Form/Input";
+import { useRouter } from "next/router";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Input } from "../components/Form/Input";
+
+type LoginFormData = {
+  login: string;
+  senha: string;
+};
 
 const Home: NextPage = () => {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>();
+
+  const handleUserLogin: SubmitHandler<LoginFormData> = (values) => {
+    console.log(values);
+    router.push("/reservations");
+  };
+
   return (
     <Flex w="100vw" h="100vh" align="center" justify="center">
       <Flex
+        onSubmit={handleSubmit(handleUserLogin)}
         as="form"
         w="100%"
         maxW="360"
@@ -15,8 +35,8 @@ const Home: NextPage = () => {
         flexDirection="column"
       >
         <Stack spacing={4}>
-          <Input name="login" label="Login" type="text" />
-          <Input name="senha" label="Senha" type="password" />
+          <Input label="Login" type="text" {...register("login")} />
+          <Input label="Senha" type="password" {...register("senha")} />
         </Stack>
         <Button
           type="submit"

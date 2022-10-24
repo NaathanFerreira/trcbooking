@@ -28,7 +28,7 @@ const hospedes = [
     }),
   },
   {
-    id: 1,
+    id: 2,
     nome: "Gustavo",
     rg: "12.345.678-9",
     cpf: "789.456.123-21",
