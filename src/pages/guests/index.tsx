@@ -3,9 +3,11 @@ import {
   Flex,
   Heading,
   Icon,
+  Spinner,
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -13,35 +15,11 @@ import {
 import Link from "next/link";
 import { RiAddLine } from "react-icons/ri";
 import PageContainer from "../../components/PageContainer";
-
-const hospedes = [
-  {
-    id: 1,
-    nome: "Nathan",
-    rg: "12.345.678-9",
-    cpf: "789.456.123-21",
-    telefone: "(12) 3456-7894",
-    dataNascimento: new Date("11/22/2000").toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }),
-  },
-  {
-    id: 2,
-    nome: "Gustavo",
-    rg: "12.345.678-9",
-    cpf: "789.456.123-21",
-    telefone: "(12) 3456-7894",
-    dataNascimento: new Date("01/10/1999").toLocaleDateString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    }),
-  },
-];
+import { useGuests } from "../../services/hooks/useGuests";
 
 function Guests() {
+  const { isLoading, error, data } = useGuests();
+
   return (
     <PageContainer>
       <Flex mb={8} justifyContent="space-between" align="center">
@@ -66,30 +44,42 @@ function Guests() {
           </Button>
         </Link>
       </Flex>
-      <Table colorScheme="whiteAlpha">
-        <Thead>
-          <Tr>
-            <Th>Nome</Th>
-            <Th>RG</Th>
-            <Th>CPF</Th>
-            <Th>Telefone</Th>
-            <Th>Data Nascinmento</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {hospedes.map((hospede) => {
-            return (
-              <Tr key={hospede.id}>
-                <Td>{hospede.nome}</Td>
-                <Td>{hospede.rg}</Td>
-                <Td>{hospede.cpf}</Td>
-                <Td>{hospede.telefone}</Td>
-                <Td>{hospede.dataNascimento}</Td>
+      {isLoading ? (
+        <Flex justify="center">
+          <Spinner />
+        </Flex>
+      ) : error ? (
+        <Flex justify="center">
+          <Text>Falha ao obter dados das reservas</Text>
+        </Flex>
+      ) : (
+        <>
+          <Table colorScheme="whiteAlpha">
+            <Thead>
+              <Tr>
+                <Th>Nome</Th>
+                <Th>RG</Th>
+                <Th>CPF</Th>
+                <Th>Telefone</Th>
+                <Th>Data Nascinmento</Th>
               </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
+            </Thead>
+            <Tbody>
+              {data?.map((guest) => {
+                return (
+                  <Tr key={guest.id}>
+                    <Td>{guest.name}</Td>
+                    <Td>{guest.rg}</Td>
+                    <Td>{guest.cpf}</Td>
+                    <Td>{guest.phoneNumber}</Td>
+                    <Td>{guest.birthDate}</Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </>
+      )}
     </PageContainer>
   );
 }

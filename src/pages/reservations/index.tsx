@@ -3,9 +3,11 @@ import {
   Flex,
   Heading,
   Icon,
+  Spinner,
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -13,25 +15,11 @@ import {
 import { RiAddLine } from "react-icons/ri";
 import Link from "next/link";
 import PageContainer from "../../components/PageContainer";
-
-const reservas = [
-  {
-    id: 1,
-    quarto: 1,
-    dataInicio: "22/11/2022",
-    dataFim: "30/11/2022",
-    hospedePagante: "Nathan",
-  },
-  {
-    id: 2,
-    quarto: 2,
-    dataInicio: "31/12/2022",
-    dataFim: "10/01/2023",
-    hospedePagante: "Gustavo",
-  },
-];
+import { useReservations } from "../../services/hooks/useReservations";
 
 function Reservations() {
+  const { isLoading, error, data } = useReservations();
+
   return (
     <PageContainer>
       <Flex mb={8} justifyContent="space-between" align="center">
@@ -56,28 +44,40 @@ function Reservations() {
           </Button>
         </Link>
       </Flex>
-      <Table colorScheme="whiteAlpha">
-        <Thead>
-          <Tr>
-            <Th>Nº Quarto</Th>
-            <Th>Data início</Th>
-            <Th>Data fim</Th>
-            <Th>Hóspede pagante</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {reservas.map((reserva) => {
-            return (
-              <Tr key={reserva.id}>
-                <Td>{reserva.quarto}</Td>
-                <Td>{reserva.dataInicio}</Td>
-                <Td>{reserva.dataFim}</Td>
-                <Td>{reserva.hospedePagante}</Td>
+      {isLoading ? (
+        <Flex justify="center">
+          <Spinner />
+        </Flex>
+      ) : error ? (
+        <Flex justify="center">
+          <Text>Falha ao obter dados das reservas</Text>
+        </Flex>
+      ) : (
+        <>
+          <Table colorScheme="whiteAlpha">
+            <Thead>
+              <Tr>
+                <Th>Nº Quarto</Th>
+                <Th>Data início</Th>
+                <Th>Data fim</Th>
+                <Th>Hóspede pagante</Th>
               </Tr>
-            );
-          })}
-        </Tbody>
-      </Table>
+            </Thead>
+            <Tbody>
+              {data?.map((reservation) => {
+                return (
+                  <Tr key={reservation.id}>
+                    <Td>{reservation.roomNumber}</Td>
+                    <Td>{reservation.startDate}</Td>
+                    <Td>{reservation.endDate}</Td>
+                    <Td>{reservation.payingGuest}</Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
+          </Table>
+        </>
+      )}
     </PageContainer>
   );
 }
