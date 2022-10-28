@@ -97,14 +97,14 @@ function Guests() {
                             as="a"
                             aria-label="edit-icon"
                             colorScheme="orange"
-                            icon={<RiPencilLine />}
+                            icon={<Icon as={RiPencilLine} />}
                           />
                         </Link>
                         <IconButton
                           disabled={deleteGuestMutation.isLoading}
                           aria-label="delete-icon"
                           colorScheme="red"
-                          icon={<RiDeleteBin6Line />}
+                          icon={<Icon as={RiDeleteBin6Line} />}
                           onClick={() => handleDeleteGuest(guest.id)}
                         />
                       </HStack>

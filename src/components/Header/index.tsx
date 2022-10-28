@@ -1,7 +1,23 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Icon,
+  IconButton,
+  Text,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { RiMenuLine } from "react-icons/ri";
+import { useSiderbarDrawer } from "../../contexts/SidebarDrawerContext";
 import Logo from "./Logo";
 
 function Header() {
+  const { onOpen } = useSiderbarDrawer();
+
+  const isWideVersion = useBreakpointValue({
+    base: false,
+    lg: true,
+  });
+
   return (
     <Flex
       w="100%"
@@ -13,6 +29,16 @@ function Header() {
       align="center"
       p={6}
     >
+      {!isWideVersion && (
+        <IconButton
+          aria-label="Open navigation bar"
+          marginRight={2}
+          icon={<Icon as={RiMenuLine} />}
+          fontSize={24}
+          variant="unstyled"
+          onClick={onOpen}
+        />
+      )}
       <Logo />
       <Box flex="1" ml="6">
         <Text fontSize="4xl" fontWeight="bold" letterSpacing="tight" ml={2}>
