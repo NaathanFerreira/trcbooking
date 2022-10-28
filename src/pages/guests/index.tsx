@@ -2,7 +2,9 @@ import {
   Button,
   Flex,
   Heading,
+  HStack,
   Icon,
+  IconButton,
   Spinner,
   Table,
   Tbody,
@@ -12,19 +14,33 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { RiAddLine } from "react-icons/ri";
+import { RiAddLine, RiDeleteBin6Line, RiPencilLine } from "react-icons/ri";
+import { toast } from "react-toastify";
 import PageContainer from "../../components/PageContainer";
-import { useGuests } from "../../services/hooks/useGuests";
+import { deleteGuest, useGuests } from "../../services/hooks/useGuests";
+import { queryClient } from "../../services/queryClient";
 
 function Guests() {
   const { isLoading, error, data } = useGuests();
+
+  const deleteGuestMutation = useMutation(deleteGuest, {
+    onSuccess: () => {
+      queryClient.invalidateQueries(["guests"]);
+    },
+  });
+
+  async function handleDeleteGuest(id: number) {
+    await deleteGuestMutation.mutateAsync(id);
+    toast.success("Usuário deletado com sucesso !");
+  }
 
   return (
     <PageContainer>
       <Flex mb={8} justifyContent="space-between" align="center">
         <Heading size="lg" fontWeight="normal">
-          Hóspedes
+          Hóspedes ({data?.length})
         </Heading>
         <Link href="/guests/create" passHref>
           <Button
@@ -57,22 +73,42 @@ function Guests() {
           <Table colorScheme="whiteAlpha">
             <Thead>
               <Tr>
-                <Th>Nome</Th>
-                <Th>RG</Th>
-                <Th>CPF</Th>
-                <Th>Telefone</Th>
-                <Th>Data Nascinmento</Th>
+                <Th textAlign="center">Nome</Th>
+                <Th textAlign="center">RG</Th>
+                <Th textAlign="center">CPF</Th>
+                <Th textAlign="center">Telefone</Th>
+                <Th textAlign="center">Data Nascinmento</Th>
+                <Th textAlign="center" width={8}></Th>
               </Tr>
             </Thead>
             <Tbody>
               {data?.map((guest) => {
                 return (
                   <Tr key={guest.id}>
-                    <Td>{guest.name}</Td>
-                    <Td>{guest.rg}</Td>
-                    <Td>{guest.cpf}</Td>
-                    <Td>{guest.phoneNumber}</Td>
-                    <Td>{guest.birthDate}</Td>
+                    <Td textAlign="center">{guest.name}</Td>
+                    <Td textAlign="center">{guest.rg}</Td>
+                    <Td textAlign="center">{guest.cpf}</Td>
+                    <Td textAlign="center">{guest.phoneNumber}</Td>
+                    <Td textAlign="center">{guest.birthDate}</Td>
+                    <Td textAlign="center">
+                      <HStack spacing={1}>
+                        <Link href={`/guests/edit/${guest.id}`} passHref>
+                          <IconButton
+                            as="a"
+                            aria-label="edit-icon"
+                            colorScheme="orange"
+                            icon={<RiPencilLine />}
+                          />
+                        </Link>
+                        <IconButton
+                          disabled={deleteGuestMutation.isLoading}
+                          aria-label="delete-icon"
+                          colorScheme="red"
+                          icon={<RiDeleteBin6Line />}
+                          onClick={() => handleDeleteGuest(guest.id)}
+                        />
+                      </HStack>
+                    </Td>
                   </Tr>
                 );
               })}

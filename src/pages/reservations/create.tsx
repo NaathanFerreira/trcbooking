@@ -45,14 +45,9 @@ function CreateReservation() {
     resolver: yupResolver(createReservationFormSchema),
   });
 
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
-
   const handleCreateNewReservation: SubmitHandler<CreateReservationFormData> = (
     values
   ) => {
-    console.log(values);
     router.push("/reservations");
   };
 

@@ -18,7 +18,6 @@ const Home: NextPage = () => {
   } = useForm<LoginFormData>();
 
   const handleUserLogin: SubmitHandler<LoginFormData> = (values) => {
-    console.log(values);
     router.push("/reservations");
   };
 
