@@ -1,5 +1,22 @@
 {
-  "guests": [],
+  "guests": [
+    {
+      "name": "Nathan",
+      "rg": "11.111.111-1",
+      "cpf": "222.222.222-22",
+      "phoneNumber": "(99) 99999-9999",
+      "birthDate": "2023-06-03",
+      "id": 1
+    },
+    {
+      "name": "Jonh Doe",
+      "rg": "11.111.111-1",
+      "cpf": "222.222.222-22",
+      "phoneNumber": "(99) 99999-9999",
+      "birthDate": "2023-06-24",
+      "id": 2
+    }
+  ],
   "reservations": [
     {
       "id": 1,
