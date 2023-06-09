@@ -3,7 +3,7 @@
 ## Demo 📸
 
 <div align="center" >
-  <img src="./github/demo1.png" alt="demo1">
+  <img src="./github/demo1.gif" alt="demo1">
 </div>
 
 ---
